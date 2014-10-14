@@ -16,7 +16,7 @@ __docformat__ = 'plaintext'
 import os
 from cx_Oracle import NUMBER, STRING
 from Products.Archetypes.atapi import log
-from Products.VirtualDataCentre.config import VDCLogLevel
+from logging import INFO,DEBUG
 ##/code-section module-header
 
 from zope import interface
@@ -27,9 +27,19 @@ from zope.interface import implements
 
 from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
 
-
+LogLevel=INFO
 class OWAWrapper(BrowserView):
     """
+    This code is designed to permit the invocation of Oracle Pl/Sql procedures
+    which use the HTP and HTF packages to output HTML to a webpage (that is, the
+    Oracle Web Access [OWA] toolkit).
+    
+    This is the same service provided by mod_plsql in later Oracle HTTP servers.
+    
+    This code was written for Plone, but should be useful elsewhere with the 
+    right tweaks. Be aware, though, that it has exactly as much security as 
+    Oracle's OWA: which is __very__ little. As written, it is depending on the
+    security provided by Plone.
     """
 
     ##code-section class-header_OWAWrapper #fill in your manual code here
@@ -86,7 +96,7 @@ class OWAWrapper(BrowserView):
               %(procedure)s(%(argList)s);
             END;
         """ % locals()
-        log(sql, level=VDCLogLevel)
+        log(sql, level=LogLevel)
 
         # find the oracle connection
         cursor = self.context.vdc_db._wrapper.connection.cursor()
